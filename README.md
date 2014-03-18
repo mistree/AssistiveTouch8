@@ -4,7 +4,7 @@ AssistiveTouch8
 Assistive Touch Tool for win8
 
 
-*Caution: using hooks for detecting touching activities
+*Caution: using hooks for detecting touch activities
 
 *Support 6 direction slide gesture
 
