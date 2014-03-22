@@ -1,0 +1,5 @@
+LIBRARY	TouchHook
+EXPORTS
+   SetMessageHook
+SECTIONS
+	.HOOKDATA   Read Write Shared
