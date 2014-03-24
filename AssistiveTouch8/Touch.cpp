@@ -40,7 +40,10 @@ void Touch::Update( Event Type, Point Position )
 void Touch::Run()
 {
 	if (g == None)
+	{
+		Emu->Reset();
 		return;
+	}
 	else if (g == Emu->PageDown || g == Emu->PageUp)
 	{
 		TurnPage( g );

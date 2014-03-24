@@ -18,13 +18,13 @@ void Emulation::Send( INPUT* Command )
 	  SendInput(1, &Command[1], sizeof(INPUT));
 	  return;
   }
-  SendInput(i, Command, sizeof(INPUT));
-  if ( Command[0].type != INPUT_KEYBOARD )
-	  return;
+  for (int j = 0; j < i; j++)
+	  SendInput(1, &Command[j], sizeof(INPUT));
   Sleep(GapTime);
-  for (i = 0; i<MAXINPUT && Command[i].type != NOTSET; i++)
-	  Command[i].ki.dwFlags |= KEYEVENTF_KEYUP;
-  SendInput(i, Command, sizeof(INPUT));
+  for (int j = 0; j<i; j++)
+	  Command[j].ki.dwFlags |= KEYEVENTF_KEYUP;
+  for (int j = 0; j < i; j++)
+	  SendInput(1, &Command[j], sizeof(INPUT));
 };
 
 void Emulation::SendContinous( INPUT* Command )
@@ -107,6 +107,7 @@ void Emulation::LoadKeys(INPUT* Command,char* Name, char* Path)
 		Command[1].mi.time = 0;
 		break;
 	case INPUT_KEYBOARD:
+		Command[0].ki.time = Command[1].ki.time = Command[2].ki.time = 0;
 		Command[0].ki.wVk = Key1;
 		Command[1].ki.wVk = Key2;
 		Command[2].ki.wVk = Key3;
