@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TouchHook", "CppHookDll\Cpp
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AssistiveTouch8", "AssistiveTouch8\AssistiveTouch8.vcxproj", "{46D2DC58-1957-4FCC-BC36-DD88DC4D436F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TouchBand", "TouchBand\TouchBand.vcxproj", "{ADFA2633-EF3C-46C3-8793-AC0D2BE72799}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -21,6 +23,10 @@ Global
 		{46D2DC58-1957-4FCC-BC36-DD88DC4D436F}.Debug|Win32.Build.0 = Debug|Win32
 		{46D2DC58-1957-4FCC-BC36-DD88DC4D436F}.Release|Win32.ActiveCfg = Release|Win32
 		{46D2DC58-1957-4FCC-BC36-DD88DC4D436F}.Release|Win32.Build.0 = Release|Win32
+		{ADFA2633-EF3C-46C3-8793-AC0D2BE72799}.Debug|Win32.ActiveCfg = Debug|Win32
+		{ADFA2633-EF3C-46C3-8793-AC0D2BE72799}.Debug|Win32.Build.0 = Debug|Win32
+		{ADFA2633-EF3C-46C3-8793-AC0D2BE72799}.Release|Win32.ActiveCfg = Release|Win32
+		{ADFA2633-EF3C-46C3-8793-AC0D2BE72799}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

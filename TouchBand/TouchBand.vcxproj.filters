@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Com">
+      <UniqueIdentifier>{b0bbb973-bf10-49ef-a9cc-65145333077c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Implementation">
+      <UniqueIdentifier>{1d2bc179-127e-4d45-933c-7c1307d27978}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ClassFactory.cpp">
+      <Filter>Com</Filter>
+    </ClCompile>
+    <ClCompile Include="DeskBand.cpp">
+      <Filter>Com</Filter>
+    </ClCompile>
+    <ClCompile Include="TouchBand.cpp">
+      <Filter>Com</Filter>
+    </ClCompile>
+    <ClCompile Include="IDeskBandWindow.cpp">
+      <Filter>Implementation</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ClassFactory.h">
+      <Filter>Com</Filter>
+    </ClInclude>
+    <ClInclude Include="DeskBand.h">
+      <Filter>Com</Filter>
+    </ClInclude>
+    <ClInclude Include="DeskBandDef.h">
+      <Filter>Com</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs.h" />
+    <ClInclude Include="IDeskBandWindow.h">
+      <Filter>Implementation</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TouchBand.def">
+      <Filter>Com</Filter>
+    </None>
+  </ItemGroup>
+</Project>
