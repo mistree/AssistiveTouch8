@@ -1,0 +1,28 @@
+﻿生成启动时间为 2014/4/3 0:44:49。
+     1>项目“C:\Users\mistree\Documents\AssistiveTouch\AssistiveTouch8\AssistiveTouch8.vcxproj”在节点 2 上(Build 个目标)。
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(381,5): warning MSB8028: The intermediate directory (x64\Release\) contains files shared from another project (TouchBand.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+     1>ClCompile:
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D AssistiveTouch8_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Release\\" /Fd"x64\Release\vc120.pdb" /Gd /TP /errorReport:prompt InputEmulation.cpp TouchDetector.cpp
+         InputEmulation.cpp
+         TouchDetector.cpp
+       Link:
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\mistree\Documents\AssistiveTouch\x64\Release\AssistiveTouch8.dll" /INCREMENTAL:NO /NOLOGO uxtheme.lib strsafe.lib advapi32.lib Gdiplus.lib comctl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /DEF:"AssistiveTouch8.def" /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\mistree\Documents\AssistiveTouch\x64\Release\AssistiveTouch8.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\mistree\Documents\AssistiveTouch\x64\Release\AssistiveTouch8.lib" /MACHINE:X64 /DLL x64\Release\Resource.res
+         x64\Release\ClassFactory.obj
+         x64\Release\ConfigurationWindow.obj
+         x64\Release\DeskBand.obj
+         x64\Release\DeskBandWindow.obj
+         x64\Release\IconWindow.obj
+         x64\Release\InputEmulation.obj
+         x64\Release\Timer.obj
+         x64\Release\TouchBand.obj
+         x64\Release\TouchDetector.obj
+     1>AssistiveTouch8.def(3): warning LNK4017: DESCRIPTION 语句不支持目标平台；已忽略
+            正在创建库 C:\Users\mistree\Documents\AssistiveTouch\x64\Release\AssistiveTouch8.lib 和对象 C:\Users\mistree\Documents\AssistiveTouch\x64\Release\AssistiveTouch8.exp
+         正在生成代码
+         已完成代码的生成
+         AssistiveTouch8.vcxproj -> C:\Users\mistree\Documents\AssistiveTouch\x64\Release\AssistiveTouch8.dll
+     1>已完成生成项目“C:\Users\mistree\Documents\AssistiveTouch\AssistiveTouch8\AssistiveTouch8.vcxproj”(Build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:03.40

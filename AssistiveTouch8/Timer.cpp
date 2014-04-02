@@ -2,12 +2,12 @@
 
 Timer::Timer()
 {
-   Start();
+	Start();
 };
 
 void Timer::Start()
 {
-   StartTime = GetTickCount();
+	StartTime = GetTickCount();
 };
 
 int Timer::Elasped()

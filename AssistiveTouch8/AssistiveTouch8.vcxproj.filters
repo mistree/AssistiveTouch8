@@ -1,64 +1,104 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="源文件">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Com">
+      <UniqueIdentifier>{b0bbb973-bf10-49ef-a9cc-65145333077c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="资源文件">
+    <Filter Include="Resource">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Implementation">
+      <UniqueIdentifier>{1d2bc179-127e-4d45-933c-7c1307d27978}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Implementation\GUI">
+      <UniqueIdentifier>{230b5b58-7b49-4bc8-a722-7dea7cbf8aa7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Implementation\Core">
+      <UniqueIdentifier>{7be6eb4f-5180-4e72-a174-f8cda778527d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Implementation\Utils">
+      <UniqueIdentifier>{320f51ca-eab6-4451-8d5f-dc140a374c9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="ClassFactory.cpp">
+      <Filter>Com</Filter>
     </ClCompile>
-    <ClCompile Include="Emulation.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="DeskBand.cpp">
+      <Filter>Com</Filter>
+    </ClCompile>
+    <ClCompile Include="TouchBand.cpp">
+      <Filter>Com</Filter>
+    </ClCompile>
+    <ClCompile Include="DeskBandWindow.cpp">
+      <Filter>Implementation\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigurationWindow.cpp">
+      <Filter>Implementation\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="InputEmulation.cpp">
+      <Filter>Implementation\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="TouchDetector.cpp">
+      <Filter>Implementation\Core</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
-      <Filter>源文件</Filter>
+      <Filter>Implementation\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Touch.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="IconWindow.cpp">
+      <Filter>Implementation\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\Debug\TouchHook.lib" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="picture.png">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="ico.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Emulation.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="ClassFactory.h">
+      <Filter>Com</Filter>
+    </ClInclude>
+    <ClInclude Include="DeskBand.h">
+      <Filter>Com</Filter>
+    </ClInclude>
+    <ClInclude Include="DeskBandDef.h">
+      <Filter>Com</Filter>
+    </ClInclude>
+    <ClInclude Include="DeskBandWindow.h">
+      <Filter>Implementation\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigurationWindow.h">
+      <Filter>Implementation\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="InputEmulation.h">
+      <Filter>Implementation\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="TouchDetector.h">
+      <Filter>Implementation\Core</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
-      <Filter>头文件</Filter>
+      <Filter>Implementation\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Touch.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="TypeDef.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="IconWindow.h">
+      <Filter>Implementation\GUI</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>资源文件</Filter>
+      <Filter>Resource</Filter>
     </ClInclude>
+    <ClInclude Include="Libs.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="resource.rc">
-      <Filter>资源文件</Filter>
+    <None Include="AssistiveTouch8.def">
+      <Filter>Com</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc">
+      <Filter>Resource</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Touch.ico">
+      <Filter>Resource</Filter>
+    </Image>
+    <Image Include="Icon.png">
+      <Filter>Resource</Filter>
+    </Image>
   </ItemGroup>
 </Project>
