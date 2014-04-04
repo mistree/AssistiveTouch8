@@ -24,7 +24,7 @@ IconWindow::IconWindow(HINSTANCE Dll)
 	memcpy(pmem, lpResource, Length);
 	IStream* pStream;
 	CreateStreamOnHGlobal(mMemory, FALSE, &pStream);
-	mImage = Gdiplus::Image::FromStream(pStream);
+	mImage = Image::FromStream(pStream);
 	GlobalUnlock(mMemory);
 	pStream->Release();
 	FreeResource(lpResource);
@@ -42,13 +42,16 @@ IconWindow::IconWindow(HINSTANCE Dll)
 	IconClass.lpszClassName = TEXT("AssistiveTouch8");
 	RegisterClass(&IconClass);
 
+	mPosition.X = GetPrivateProfileInt(L"Settings", L"PosX", 500, mFullPath);
+	mPosition.Y = GetPrivateProfileInt(L"Settings", L"PosY", 500, mFullPath);
+
 	mIconHwnd = CreateWindowEx(
 		                        WS_EX_NOACTIVATE | WS_EX_TOPMOST,
 		                        L"AssistiveTouch8",
 		                        L"AssistiveTouch8", 
 		                        WS_POPUP,                
-								GetPrivateProfileInt(L"Settings", L"PosX", 500, mFullPath),
-								GetPrivateProfileInt(L"Settings", L"PosY", 500, mFullPath),
+								mPosition.X,
+								mPosition.Y,
 								mImage->GetWidth(),
 								mImage->GetHeight(),
 		                        NULL,                  
@@ -70,16 +73,17 @@ void IconWindow::Show(bool Visible)
 	UpdateWindow(mIconHwnd);
 };
 
-void IconWindow::Move(int PosX, int PosY)
+void IconWindow::Move(Point Pos)
 {
 	MoveWindow(
 		mIconHwnd,
-		PosX,
-		PosY,
+		Pos.X - 0.5*mImage->GetWidth(),
+		Pos.Y - 0.5*mImage->GetHeight(),
 		mImage->GetWidth(),
 		mImage->GetHeight(),
 		true
 		);
+	mPosition = Pos;
 };
 
 void IconWindow::OnPaint()

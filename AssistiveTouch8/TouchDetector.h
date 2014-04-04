@@ -1,31 +1,35 @@
 #ifndef TOUCHDETECTOR_H_
 #define TOUCHDETECTOR_H_
 
-#include "Libs.h"
-#include "Timer.h"
+#include <Windows.h>
 #include "InputEmulation.h"
-#include "IconWindow.h"
+
+#include "TouchPoint.h"
+#include "TouchEvent.h"
 
 class TouchDetector
 {
 private:
-	HINSTANCE       mDll;
-	HWND            mIconHwnd;
-	HHOOK           mHook;
-	InputEmulation& mEmu;
-	IconWindow&     mIcon;
+	HINSTANCE        mDll;
+	HWND             mIconHwnd;
+	HHOOK            mHook;
+	InputEmulation&  mEmu;
+	TouchPoint*      mPoints[5];
+	TouchEvent*      mEvents[50];
 
 public:
-	TouchDetector(HINSTANCE Dll, InputEmulation& Emu, IconWindow& Icon);
+	TouchDetector(HINSTANCE Dll, InputEmulation& Emu);
 	~TouchDetector();
 
-// hook functions
+	void Register(TouchEvent* Event);
+	void Unregister(TouchEvent* Event);
+
 private:
+	void QueryEvent(TouchPoint* Point);
+	void Update(TouchType Type, Point Pos);
+
 	BOOL SetMessageHook(DWORD ThreadId, BOOL Install);
 	HMODULE GetFunctionAddress(PVOID Function);
-
-// static callback functions
-private:
 	static LRESULT CALLBACK MessageHookProc(int nCode, WPARAM wParam, LPARAM lParam);
 };
 

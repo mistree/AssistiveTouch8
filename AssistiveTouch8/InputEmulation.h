@@ -1,18 +1,35 @@
 #ifndef INPUTEMULATION_H_
 #define INPUTEMULATION_H_
 
-#include "Libs.h"
+#include <windows.h>
+#include <gdiplus.h>
+using namespace Gdiplus;
+
 #include "Timer.h"
+
+struct KeyboardEvent
+{
+	int NumberOfKeys = 0;
+	int Keys[3];
+};
+
+struct MouseEvent
+{
+	int WheelMovement = 0;
+	int Button = 0;
+};
 
 class InputEmulation
 {
-private:
-	HWND mFrontHwnd;
-
 public:
-	InputEmulation();
-	~InputEmulation();
+	int  Interval = 100; // ms
 
+	void Send(KeyboardEvent Event);
+	void Send(KeyboardEvent Event, bool PressDown);
+	void Send(MouseEvent Event, Point Pos);
+
+private:
+	INPUT Command[3];
 };
 
 #endif //INPUTEMULATION_H_

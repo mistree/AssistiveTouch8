@@ -6,20 +6,9 @@ Assistive Touch Tool for win8
 
 *Caution: using hooks for detecting touch activities
 
-*Support customized gestures and shortcut sets
+*Support 8 direction slide gesture
 
-*Support auto detecting (apply different shortcut sets to different front apps)
+*Support free move
 
-*Support 3 operation mode:
-
-     *Classical Assistive Mode
-     
-     *Enhanced Game Assistive Mode (Currently under development)
-     
-     *Simple Shortcut Mode (Currently under development)
-   
-   
-The application only uses Win32 API.
-
-Simple, Clean and High efficiency
+*Support customized shortcut sets
 

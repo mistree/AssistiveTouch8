@@ -21,6 +21,7 @@ private:
 	InputEmulation      mInputEmulation;
 	IconWindow          mIconWin;
 	ConfigurationWindow mConfigurationWin;
+	bool                mShow;
 
 public:
 	DeskBandWindow();

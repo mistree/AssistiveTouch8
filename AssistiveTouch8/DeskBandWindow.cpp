@@ -4,12 +4,16 @@
 #include <Vsstyle.h>
 #include "resource.h"
 
+#include "TouchEvent.h"
+
 void*     pBandWin;
 const wchar_t Toolbar[] = L"::TOOLBAR";
 
+TouchEvent* Test;
+
 DeskBandWindow::DeskBandWindow()
    : mIconWin(g_hDllInst)
-   , mTouchDetector(g_hDllInst, mInputEmulation, mIconWin)
+   , mTouchDetector(g_hDllInst, mInputEmulation)
 {
 	mHwnd = NULL;
 	pBandWin = this;
@@ -18,11 +22,16 @@ DeskBandWindow::DeskBandWindow()
 	wcscat(Theme, Toolbar);
 	ThemeReady = false;
 	Mouse = Left;
+	mShow = false;
+	
+	Test = new DragEvent(mInputEmulation, mIconWin,1500);
+	mTouchDetector.Register(Test);
 };
 
 DeskBandWindow::~DeskBandWindow()
 {
-
+	mTouchDetector.Unregister(Test);
+	delete Test;
 };
 
 BOOL DeskBandWindow::CreateDeskBand(HWND hParentWnd, HINSTANCE hInstance, LPVOID pData)
@@ -55,8 +64,6 @@ BOOL DeskBandWindow::CreateDeskBand(HWND hParentWnd, HINSTANCE hInstance, LPVOID
 			hInstance,
 			pData);//(LPVOID)this);
 		
-
-		//SetMessageHook(true, 0, mHwnd, GetCurrentThreadId());
 
 	return (NULL != mHwnd);
 };
@@ -134,7 +141,7 @@ LRESULT CALLBACK DeskBandWindow::WndProc(HWND hWnd, UINT uMessage, WPARAM wParam
 			pDeskBand->Mouse = Entered;
 			InvalidateRect(pDeskBand->mHwnd, NULL, true);
 			UpdateWindow(pDeskBand->mHwnd);
-			pDeskBand->mIconWin.Show(true);
+			pDeskBand->mIconWin.Show(pDeskBand->mShow = !pDeskBand->mShow);
 		}
 		break;
 

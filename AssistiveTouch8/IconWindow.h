@@ -1,9 +1,12 @@
 #ifndef ICONWINDOW_H
 #define ICONWINDOW_H
 
-#include "Libs.h"
+//#include "Libs.h"
+#include <windows.h>
+#include <strsafe.h>
 #include <gdiplus.h>
 using namespace Gdiplus;
+#include "resource.h"
 
 class IconWindow
 {
@@ -23,7 +26,7 @@ public:
 	IconWindow(HINSTANCE Dll);
 	~IconWindow();
 	void Show(bool Visible);
-	void Move(int PosX, int PosY);
+	void Move(Point Pos);
 
 private:
 	void OnPaint();

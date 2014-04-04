@@ -1,7 +1,5 @@
 LIBRARY     AssistiveTouch8
 
-DESCRIPTION "Touch Band Object Implementations"
-
 EXPORTS
 
    DllMain			   PRIVATE

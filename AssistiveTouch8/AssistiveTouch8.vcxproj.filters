@@ -20,6 +20,12 @@
     <Filter Include="Implementation\Utils">
       <UniqueIdentifier>{320f51ca-eab6-4451-8d5f-dc140a374c9b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Implementation\Core\Touch">
+      <UniqueIdentifier>{003671fc-22ee-4019-9762-e4beedef4f9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Implementation\Core\Emulation">
+      <UniqueIdentifier>{245f2086-94e3-4514-8980-5cbfd78f43fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClassFactory.cpp">
@@ -37,17 +43,29 @@
     <ClCompile Include="ConfigurationWindow.cpp">
       <Filter>Implementation\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="InputEmulation.cpp">
-      <Filter>Implementation\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="TouchDetector.cpp">
-      <Filter>Implementation\Core</Filter>
-    </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>Implementation\Utils</Filter>
     </ClCompile>
     <ClCompile Include="IconWindow.cpp">
       <Filter>Implementation\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Configuration.cpp">
+      <Filter>Implementation\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="TouchDetector.cpp">
+      <Filter>Implementation\Core\Touch</Filter>
+    </ClCompile>
+    <ClCompile Include="InputEmulation.cpp">
+      <Filter>Implementation\Core\Emulation</Filter>
+    </ClCompile>
+    <ClCompile Include="TouchPoint.cpp">
+      <Filter>Implementation\Core\Touch</Filter>
+    </ClCompile>
+    <ClCompile Include="TouchEvent.cpp">
+      <Filter>Implementation\Core\Touch</Filter>
+    </ClCompile>
+    <ClCompile Include="TouchEvents.cpp">
+      <Filter>Implementation\Core\Touch</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -66,12 +84,6 @@
     <ClInclude Include="ConfigurationWindow.h">
       <Filter>Implementation\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="InputEmulation.h">
-      <Filter>Implementation\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="TouchDetector.h">
-      <Filter>Implementation\Core</Filter>
-    </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>Implementation\Utils</Filter>
     </ClInclude>
@@ -82,6 +94,21 @@
       <Filter>Resource</Filter>
     </ClInclude>
     <ClInclude Include="Libs.h" />
+    <ClInclude Include="Configuration.h">
+      <Filter>Implementation\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="TouchDetector.h">
+      <Filter>Implementation\Core\Touch</Filter>
+    </ClInclude>
+    <ClInclude Include="InputEmulation.h">
+      <Filter>Implementation\Core\Emulation</Filter>
+    </ClInclude>
+    <ClInclude Include="TouchPoint.h">
+      <Filter>Implementation\Core\Touch</Filter>
+    </ClInclude>
+    <ClInclude Include="TouchEvent.h">
+      <Filter>Implementation\Core\Touch</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="AssistiveTouch8.def">

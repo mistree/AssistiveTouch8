@@ -14,8 +14,6 @@
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 #define RECTWIDTH(x)   ((x).right - (x).left)
 #define RECTHEIGHT(x)  ((x).bottom - (x).top)
-#define GET_X_LPARAM(lp)                        ((int)(short)LOWORD(lp))
-#define GET_Y_LPARAM(lp)                        ((int)(short)HIWORD(lp))
 
 #define IDM_COMMAND  0
 #define DB_CLASS_NAME (L"DeskBandTouchClass")
