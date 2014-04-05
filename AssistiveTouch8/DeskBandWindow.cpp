@@ -22,6 +22,7 @@ DeskBandWindow::DeskBandWindow()
    : mIconWin(g_hDllInst)
    , mTouchDetector(g_hDllInst, mInputEmulation)
    , mConfig(g_hDllInst,mTouchDetector,mInputEmulation,mIconWin)
+   , mConfigurationWin(mConfig)
 {
 	mHwnd = NULL;
 	pBandWin = this;
@@ -104,6 +105,11 @@ void DeskBandWindow::RefreshDeskBand()
 {
 	InvalidateRect(mHwnd, NULL, TRUE);
 	UpdateWindow(mHwnd);
+};
+
+void DeskBandWindow::ShowConfig()
+{
+	mConfigurationWin.Show();
 };
 
 LRESULT CALLBACK DeskBandWindow::WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam)

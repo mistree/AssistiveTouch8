@@ -2,8 +2,13 @@
 
 ConfigurationWindow* pConfig;
 
-ConfigurationWindow::ConfigurationWindow()
+ConfigurationWindow::ConfigurationWindow(Configuration& Config)
+: mConfig(Config)
 {
 	pConfig = this;
 };
 
+void ConfigurationWindow::Show()
+{
+
+};

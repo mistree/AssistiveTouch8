@@ -11,7 +11,6 @@
 
 
 TouchDetector*   pTouch = nullptr;
-Configuration*   pConfig = nullptr;
 
 #pragma data_seg(".shared")
 HHOOK mHookMessage = NULL;

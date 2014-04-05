@@ -1,15 +1,18 @@
 #ifndef CONFIGURATIONWINDOW_H_
 #define CONFIGURATIONWINDOW_H_
 
-#include "Libs.h"
+#include <Windows.h>
+#include "Configuration.h"
 
 class ConfigurationWindow
 {
-public:
-	ConfigurationWindow();
-
-
 private:
+	Configuration& mConfig;
+
+public:
+	ConfigurationWindow(Configuration& Config);
+
+	void Show();
 
 };
 

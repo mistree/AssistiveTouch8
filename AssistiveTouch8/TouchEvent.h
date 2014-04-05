@@ -20,7 +20,6 @@ public:
 	{};
 };
 
-
 class DragEvent : public TouchEvent
 {
 private:
@@ -62,4 +61,64 @@ public:
 	void Update(TouchPoint* Point);
 };
 
+class SlideEvent : public TouchEvent
+{
+private:
+	IconWindow&   mIcon;
+	KeyboardEvent mEventK;
+	MouseEvent    mEventM;
+	EventType     mType;
+	int           mTime;
+	TouchDirection mDirection;
+public:
+	SlideEvent(InputEmulation& Emu, IconWindow& Icon, KeyboardEvent Event, TouchDirection Direction, int Time)
+		: TouchEvent(Emu)
+		, mIcon(Icon)
+		, mEventK(Event)
+		, mType(EKeyboard)
+		, mTime(Time)
+		, mDirection(Direction)
+	{};
+	SlideEvent(InputEmulation& Emu, IconWindow& Icon, MouseEvent Event, TouchDirection Direction, int Time)
+		: TouchEvent(Emu)
+		, mIcon(Icon)
+		, mEventM(Event)
+		, mType(EKeyboard)
+		, mTime(Time)
+		, mDirection(Direction)
+	{};
+	void Update(TouchPoint* Point);
+};
+
+class SlideContinousEvent : public TouchEvent
+{
+private:
+	IconWindow&   mIcon;
+	KeyboardEvent mEventK;
+	MouseEvent    mEventM;
+	EventType     mType;
+	int           mTime;
+	int           mInterval;
+	TouchDirection mDirection;
+public:
+	SlideContinousEvent(InputEmulation& Emu, IconWindow& Icon, KeyboardEvent Event, TouchDirection Direction, int Time, int Interval)
+		: TouchEvent(Emu)
+		, mIcon(Icon)
+		, mEventK(Event)
+		, mType(EKeyboard)
+		, mTime(Time)
+		, mDirection(Direction)
+		, mInterval(Interval)
+	{};
+	SlideContinousEvent(InputEmulation& Emu, IconWindow& Icon, MouseEvent Event, TouchDirection Direction, int Time, int Interval)
+		: TouchEvent(Emu)
+		, mIcon(Icon)
+		, mEventM(Event)
+		, mType(EKeyboard)
+		, mTime(Time)
+		, mDirection(Direction)
+		, mInterval(Interval)
+	{};
+	void Update(TouchPoint* Point);
+};
 #endif //TOUCHEVENT_H

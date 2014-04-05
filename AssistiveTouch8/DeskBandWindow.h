@@ -34,6 +34,8 @@ public:
 	HWND GetDeskBandHandle();
 	SIZE GetDeskBandMinSize(BOOL fNormalViewMode = TRUE);
 	void RefreshDeskBand();
+
+	void ShowConfig();
 	
 private:
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);

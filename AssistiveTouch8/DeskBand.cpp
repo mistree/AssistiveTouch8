@@ -362,7 +362,7 @@ STDMETHODIMP CDeskBand::TranslateAcceleratorIO(MSG *pMsg)
 }
 
 // IContextMenu 
-
+/*
 STDMETHODIMP CDeskBand::QueryContextMenu(HMENU hMenu,
 	UINT indexMenu,
 	UINT idCmdFirst,
@@ -388,13 +388,42 @@ STDMETHODIMP CDeskBand::InvokeCommand(LPCMINVOKECOMMANDINFO lpcmi)
 {
 	switch (LOWORD(lpcmi->lpVerb))
 	{
+	case ID_TOUCHBAND_SETTINGS:
+		m_pDeskBandWin->ShowConfig();
+	default:
+		return E_INVALIDARG;
+	}
+
+	return NOERROR;
+}
+*/
+
+STDMETHODIMP CDeskBand::QueryContextMenu(HMENU hMenu,
+	UINT indexMenu,
+	UINT idCmdFirst,
+	UINT idCmdLast,
+	UINT uFlags)
+{
+	if (!(CMF_DEFAULTONLY & uFlags))
+	{
+		InsertMenu(hMenu,
+			indexMenu,
+			MF_STRING | MF_BYPOSITION,
+			idCmdFirst + IDM_COMMAND,
+			L"Assistive Touch Tool");
+
+		return MAKE_HRESULT(SEVERITY_SUCCESS, 0, USHORT(IDM_COMMAND + 1));
+	}
+
+	return MAKE_HRESULT(SEVERITY_SUCCESS, 0, USHORT(0));
+}
+
+STDMETHODIMP CDeskBand::InvokeCommand(LPCMINVOKECOMMANDINFO lpcmi)
+{
+	switch (LOWORD(lpcmi->lpVerb))
+	{
 	case IDM_COMMAND:
-		//MessageBox(lpcmi->hwnd,
-		//	TEXT("Desk Band Command selected."),
-		//	TEXT("Sample Desk Band"),
-		//	MB_OK | MB_ICONINFORMATION);
-		//break;
-	
+		m_pDeskBandWin->ShowConfig();
 	default:
 		return E_INVALIDARG;
 	}

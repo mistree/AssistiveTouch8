@@ -12,7 +12,7 @@ private:
 	HINSTANCE       mDll;
 	wchar_t         mFullPath[256]; // path of configuration file
 	wchar_t         mFilePath[256]; // path of fron app
-	wchar_t**       mExistFullPath; // paths of exist configuration files
+	wchar_t*        mExistFullPath[50]; // paths of exist configuration files
 	int             mExistNumber;   // number of exist configuration files
 	wchar_t         mConfigName[256]; // current configuration file name
 	TouchDetector&  mTouch;
@@ -31,8 +31,13 @@ public:
 
 	KeyboardEvent LoadKeyboard(const wchar_t* EventName);
 	MouseEvent    LoadMouse(const wchar_t* EventName);
-	void          Write(const wchar_t* EventName, KeyboardEvent Event);
-	void          Write(const wchar_t* EventName, MouseEvent Event);
+	void          Refresh();
+	void          Write(const wchar_t* EventName, KeyboardEvent Event, int Time, int Interval, const wchar_t* Path);
+	void          Write(const wchar_t* EventName, MouseEvent Event, int Time, int Interval, const wchar_t* Path);
+
+private:
+	void          LoadSlideEvents(const wchar_t* EventName,TouchDirection Direction,int& ValidCount);
+	void          LoadSlideContinousEvents(const wchar_t* EventName, TouchDirection Direction, int& ValidCount);
 };
 
 #endif //CONFIGURATION_H_
