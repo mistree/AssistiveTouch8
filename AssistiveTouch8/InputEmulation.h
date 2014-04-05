@@ -7,6 +7,12 @@ using namespace Gdiplus;
 
 #include "Timer.h"
 
+enum EventType
+{
+	EKeyboard,
+	EMouse
+};
+
 struct KeyboardEvent
 {
 	int NumberOfKeys = 0;
@@ -17,6 +23,8 @@ struct MouseEvent
 {
 	int WheelMovement = 0;
 	int Button = 0;
+	bool Continous = false;
+	int ButtonUp = 0;
 };
 
 class InputEmulation

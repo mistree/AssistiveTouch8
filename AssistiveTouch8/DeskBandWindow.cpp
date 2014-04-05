@@ -6,14 +6,22 @@
 
 #include "TouchEvent.h"
 
+#define USER_F_CHANGE WM_USER+103
+#define USER_UP WM_USER+102
+#define USER_DOWN WM_USER+100
+#define USER_MOVE WM_USER+101
+
 void*     pBandWin;
 const wchar_t Toolbar[] = L"::TOOLBAR";
 
-TouchEvent* Test;
+extern TouchDetector*   pTouch;
+extern Configuration*   pConfig;
+extern HWND  mHookHwnd;
 
 DeskBandWindow::DeskBandWindow()
    : mIconWin(g_hDllInst)
    , mTouchDetector(g_hDllInst, mInputEmulation)
+   , mConfig(g_hDllInst,mTouchDetector,mInputEmulation,mIconWin)
 {
 	mHwnd = NULL;
 	pBandWin = this;
@@ -23,15 +31,11 @@ DeskBandWindow::DeskBandWindow()
 	ThemeReady = false;
 	Mouse = Left;
 	mShow = false;
-	
-	Test = new DragEvent(mInputEmulation, mIconWin,1500);
-	mTouchDetector.Register(Test);
 };
 
 DeskBandWindow::~DeskBandWindow()
 {
-	mTouchDetector.Unregister(Test);
-	delete Test;
+	//UnhookWinEvent(mEventHook);
 };
 
 BOOL DeskBandWindow::CreateDeskBand(HWND hParentWnd, HINSTANCE hInstance, LPVOID pData)
@@ -62,9 +66,8 @@ BOOL DeskBandWindow::CreateDeskBand(HWND hParentWnd, HINSTANCE hInstance, LPVOID
 			hParentWnd,
 			NULL,
 			hInstance,
-			pData);//(LPVOID)this);
-		
-
+			pData);
+		mHookHwnd = mHwnd;
 	return (NULL != mHwnd);
 };
 
@@ -168,6 +171,28 @@ LRESULT CALLBACK DeskBandWindow::WndProc(HWND hWnd, UINT uMessage, WPARAM wParam
 			lResult = 1;
 		}
 		break;
+	case USER_F_CHANGE:
+		if (pConfig != nullptr)
+			pConfig->Update((HWND)wParam);
+		break;
+	case USER_DOWN:
+	{
+					  Point Location = { (int)wParam, (int)lParam };
+					  pTouch->Update(ETouchDown, Location);
+					  break;
+	}
+	case USER_UP:
+	{
+					  Point Location = { (int)wParam, (int)lParam }; 
+					  pTouch->Update(ETouchUp, Location);
+					  break;
+	}
+	case USER_MOVE:
+	{
+					  Point Location = { (int)wParam, (int)lParam }; 
+					  pTouch->Update(ETouchMove, Location);
+					  break;
+	}
 	}
 
 	if (uMessage != WM_ERASEBKGND)
@@ -247,3 +272,4 @@ LRESULT DeskBandWindow::OnPaint(const HDC hdcIn)
 
 	return 0;
 };
+

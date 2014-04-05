@@ -31,4 +31,9 @@ void InputEmulation::Send(MouseEvent Event, Point Pos)
 	Command.mi.dwFlags = Event.Button | MOUSEEVENTF_ABSOLUTE;
 	Command.mi.mouseData = Event.WheelMovement;
 	SendInput(1, &Command, sizeof(INPUT));
+	if (!Event.Continous)
+	{
+		Sleep(Interval);
+		Command.mi.dwFlags = Event.ButtonUp | MOUSEEVENTF_ABSOLUTE;
+	}
 };

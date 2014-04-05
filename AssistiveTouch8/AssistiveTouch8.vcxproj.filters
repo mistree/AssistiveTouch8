@@ -64,9 +64,6 @@
     <ClCompile Include="TouchEvent.cpp">
       <Filter>Implementation\Core\Touch</Filter>
     </ClCompile>
-    <ClCompile Include="TouchEvents.cpp">
-      <Filter>Implementation\Core\Touch</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClassFactory.h">

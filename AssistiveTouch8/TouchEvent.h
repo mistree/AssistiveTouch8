@@ -7,7 +7,7 @@
 
 class TouchEvent
 {
-private:
+protected:
 	InputEmulation& mEmu;
 
 public:
@@ -16,10 +16,8 @@ public:
 	{};
 	virtual ~TouchEvent()
 	{};
-	virtual bool Update(TouchPoint* Point)
-	{
-		return true;
-	};
+	virtual void Update(TouchPoint* Point)
+	{};
 };
 
 
@@ -35,7 +33,33 @@ public:
 		, mIcon(Icon)
 		, mTime(Time)
 	{};
-	bool Update(TouchPoint* Point);
+	void Update(TouchPoint* Point);
+};
+
+class ClickEvent : public TouchEvent
+{
+private:
+	IconWindow&   mIcon;
+	KeyboardEvent mEventK;
+	MouseEvent    mEventM;
+	EventType     mType;
+	int           mTime;
+public:
+	ClickEvent(InputEmulation& Emu, IconWindow& Icon, KeyboardEvent Event,int Time)
+		: TouchEvent(Emu)
+		, mIcon(Icon)
+		, mEventK(Event)
+		, mType(EKeyboard)
+		, mTime(Time)
+	{};
+	ClickEvent(InputEmulation& Emu, IconWindow& Icon, MouseEvent Event,int Time)
+		: TouchEvent(Emu)
+		, mIcon(Icon)
+		, mEventM(Event)
+		, mType(EKeyboard)
+		, mTime(Time)
+	{};
+	void Update(TouchPoint* Point);
 };
 
 #endif //TOUCHEVENT_H

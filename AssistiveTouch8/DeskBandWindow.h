@@ -6,6 +6,7 @@
 #include "InputEmulation.h"
 #include "IconWindow.h"
 #include "ConfigurationWindow.h"
+#include "Configuration.h"
 
 class DeskBandWindow
 {
@@ -19,6 +20,7 @@ public:
 private:
 	TouchDetector       mTouchDetector;
 	InputEmulation      mInputEmulation;
+	Configuration       mConfig;
 	IconWindow          mIconWin;
 	ConfigurationWindow mConfigurationWin;
 	bool                mShow;
