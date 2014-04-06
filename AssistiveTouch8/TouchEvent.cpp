@@ -64,7 +64,7 @@ bool SlideContinousEvent::Update(TouchPoint* Point)
 	{
 		if (Point->Status == ETouchUp)
 		{
-			mEmu.Send(mEventK, true);
+			mEmu.Send(mEventK, false);
 		}
 		else if (mTimer.Elasped()>mInterval)
 		{
