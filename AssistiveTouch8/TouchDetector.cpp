@@ -24,6 +24,7 @@ static LRESULT CALLBACK WinHookProc(int nCode, WPARAM wParam, LPARAM lParam);
 TouchDetector::TouchDetector(HINSTANCE Dll, InputEmulation& Emu)
 : mEmu(Emu)
 , mDll(Dll)
+, mEnable(true)
 {
 	pTouch = this;
 	for (auto& i : mPoints) i = nullptr;
@@ -51,8 +52,15 @@ BOOL TouchDetector::SetMessageHook(BOOL Install)
 	}
 };
 
+void TouchDetector::Set(bool Enable)
+{
+	mEnable = Enable;
+}
+
 void TouchDetector::Update(int Id,TouchType Type, Point Pos)
 {
+	if (!mEnable)
+		return;
 	switch (Type)
 	{
 

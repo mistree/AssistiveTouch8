@@ -154,6 +154,7 @@ LRESULT CALLBACK DeskBandWindow::WndProc(HWND hWnd, UINT uMessage, WPARAM wParam
 			InvalidateRect(pDeskBand->mHwnd, NULL, true);
 			UpdateWindow(pDeskBand->mHwnd);
 			pDeskBand->mIconWin.Show(pDeskBand->mShow = !pDeskBand->mShow);
+			pDeskBand->mTouchDetector.Set(pDeskBand->mShow);
 		}
 		break;
 

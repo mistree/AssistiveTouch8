@@ -15,10 +15,12 @@ private:
 	InputEmulation&  mEmu;
 	TouchPoint*      mPoints[5];
 	TouchEvent*      mEvents[50];
+	bool             mEnable;
 
 public:
 	TouchDetector(HINSTANCE Dll, InputEmulation& Emu);
 	~TouchDetector();
+	void Set(bool Enable);
 	void Update(int Id,TouchType Type, Point Pos);
 	void Register(TouchEvent* Event);
 	void Unregister(TouchEvent* Event);
