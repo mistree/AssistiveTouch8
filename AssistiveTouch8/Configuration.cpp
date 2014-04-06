@@ -71,12 +71,12 @@ void Configuration::Update(HWND FrontWindow)
 {
 	DWORD Pid;
 	HANDLE PidHandle = NULL;
-	wchar_t FilePath[256];
+	wchar_t FilePath[512];
 	GetWindowThreadProcessId(FrontWindow, &Pid);
 	if (Pid == GetCurrentThreadId())
 		return;
 	PidHandle = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, Pid);
-	if (GetModuleFileNameEx(PidHandle, NULL, FilePath, 256) == 0)
+	if (GetModuleFileNameEx(PidHandle, NULL, FilePath, 512) == 0)
 		return;
 	if (wcscmp(FilePath, mFilePath) == 0)
 		return;
@@ -90,8 +90,9 @@ void Configuration::Update(HWND FrontWindow)
 		if (Temp == L'\0')
 			break;
 	};	
-	wcscpy(wcsstr(FileName, L"exe"), L"ini");
-	GetModuleFileName(mDll, mFullPath, 256);
+	FileName = _wcslwr(FileName);
+	wcsncpy(wcsstr(FileName, L"exe"), L"ini", 3);
+	GetModuleFileName(mDll, mFullPath, 512);
 	wcscpy(wcsstr(mFullPath, L"AssistiveTouch8.dll"), FileName);
 	bool Exist = false;
 	for (auto& i : mExistFullPath)

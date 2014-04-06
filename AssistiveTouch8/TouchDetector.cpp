@@ -1,9 +1,6 @@
 #include "TouchDetector.h"
 #include "Configuration.h"
 
-#define GET_X_LPARAM(lp)                        ((int)(short)LOWORD(lp))
-#define GET_Y_LPARAM(lp)                        ((int)(short)HIWORD(lp))
-
 #define USER_F_CHANGE WM_USER+103
 #define USER_UP WM_USER+102
 #define USER_DOWN WM_USER+100
@@ -54,29 +51,20 @@ BOOL TouchDetector::SetMessageHook(BOOL Install)
 	}
 };
 
-void TouchDetector::Update(TouchType Type, Point Pos)
+void TouchDetector::Update(int Id,TouchType Type, Point Pos)
 {
 	switch (Type)
 	{
 
 	case ETouchDown:
 	{
-					   bool NewPoint = true;
 					   for (auto& i : mPoints)
 					   {
-						   if (i != nullptr)
-						   if (TouchPoint::CalLength(Pos - i->PosCurrent) < TouchPoint::PointSize)
-							   NewPoint = false;
-					   }
-					   if (NewPoint)
-					   {
-						   for (auto& i : mPoints)
+						   if (i == nullptr)
 						   {
-							   if (i == nullptr)
-							   {
-								   i = new TouchPoint(Type, Pos);
-								   break;
-							   }
+							   i = new TouchPoint(Id,Type, Pos);
+							   QueryEvent(i);
+							   break;
 						   }
 					   }
 					   break;
@@ -87,7 +75,7 @@ void TouchDetector::Update(TouchType Type, Point Pos)
 					   for (auto& i : mPoints)
 					   {
 						   if (i != nullptr)
-						   if (TouchPoint::CalLength(Pos - i->PosCurrent) < TouchPoint::PointSize)
+						   if (i->Id == Id)
 						   {
 							   i->Update(Type, Pos);
 							   QueryEvent(i);
@@ -101,7 +89,7 @@ void TouchDetector::Update(TouchType Type, Point Pos)
 					 for (auto& i : mPoints)
 					 {
 						 if (i != nullptr)
-						 if (TouchPoint::CalLength(Pos - i->PosCurrent) < TouchPoint::PointSize)
+						 if (i->Id == Id)
 						 {
 							 i->Update(Type, Pos);
 							 QueryEvent(i);
@@ -140,14 +128,10 @@ void TouchDetector::Unregister(TouchEvent* Event)
 };
 
 void TouchDetector::QueryEvent(TouchPoint* Point)
-{
+{	
 	for (auto& i : mEvents)
-	{
 		if (i != nullptr)
-		{
 			i->Update(Point);
-		}
-	}
 };
 
 HMODULE GetFunctionAddress(PVOID Function)
@@ -181,16 +165,16 @@ LRESULT CALLBACK MessageHookProc(int nCode, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_POINTERDOWN:
 	case WM_NCPOINTERDOWN:
-		PostMessage(mHookHwnd, USER_DOWN, GET_X_LPARAM(((MSG*)lParam)->lParam), GET_Y_LPARAM(((MSG*)lParam)->lParam));
+		PostMessage(mHookHwnd, USER_DOWN, ((MSG*)lParam)->wParam, ((MSG*)lParam)->lParam);
 		break;
 	case WM_POINTERUP:
 	case WM_NCPOINTERUP:
-		PostMessage(mHookHwnd, USER_UP, GET_X_LPARAM(((MSG*)lParam)->lParam), GET_Y_LPARAM(((MSG*)lParam)->lParam));
+		PostMessage(mHookHwnd, USER_UP, ((MSG*)lParam)->wParam, ((MSG*)lParam)->lParam);
 		break;
 	case WM_POINTERUPDATE:
 	case WM_NCPOINTERUPDATE:
-		PostMessage(mHookHwnd, USER_MOVE, GET_X_LPARAM(((MSG*)lParam)->lParam), GET_Y_LPARAM(((MSG*)lParam)->lParam));
+		PostMessage(mHookHwnd, USER_MOVE, ((MSG*)lParam)->wParam, ((MSG*)lParam)->lParam);
 		break;
 	}
-	return ::CallNextHookEx(mHookMessage, nCode, wParam, lParam);
+	return 0;// ::CallNextHookEx(mHookMessage, nCode, wParam, lParam);
 };

@@ -16,13 +16,27 @@ void InputEmulation::Send(KeyboardEvent Event, bool PressDown)
 		Command.ki.time = 0;
 		Command.ki.wVk = Event.Keys[i];
 		Command.ki.wScan = MapVirtualKey(Event.Keys[i], MAPVK_VK_TO_VSC);
-		Command.ki.dwFlags = (0) ? KEYEVENTF_SCANCODE | ((PressDown) ? 0 : KEYEVENTF_KEYUP) : KEYEVENTF_SCANCODE | KEYEVENTF_EXTENDEDKEY | ((PressDown) ? 0 : KEYEVENTF_KEYUP);
+		Command.ki.dwFlags = (Event.Keys[i] < 0xA6)
+			                ? (((PressDown) ? 0 : KEYEVENTF_KEYUP) | KEYEVENTF_SCANCODE)
+							: (((PressDown) ? 0 : KEYEVENTF_KEYUP) | KEYEVENTF_SCANCODE | KEYEVENTF_EXTENDEDKEY);
 		SendInput(1, &Command, sizeof(INPUT));
 	}
 };
 
 void InputEmulation::Send(MouseEvent Event, Point Pos)
 {
+	if (!Event.Continous)
+	{
+		INPUT CommandMove = { 0 };
+		CommandMove.type = INPUT_MOUSE;
+		CommandMove.mi.time = 0;
+		CommandMove.mi.dx = Pos.X;
+		CommandMove.mi.dy = Pos.Y;
+		CommandMove.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE;
+		CommandMove.mi.mouseData = Event.WheelMovement;
+		SendInput(1, &CommandMove, sizeof(INPUT));
+	}
+	
 	INPUT Command = { 0 };
 	Command.type = INPUT_MOUSE;
 	Command.mi.time = 0;

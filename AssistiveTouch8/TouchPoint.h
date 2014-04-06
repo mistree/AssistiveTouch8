@@ -27,20 +27,21 @@ enum TouchDirection
 class TouchPoint
 {
 public:
-	TouchPoint(TouchType Type, Point Pos);
+	TouchPoint(int PointId, TouchType Type, Point Pos);
 	TouchDirection   Direction;
 	TouchType        Status;
 	Timer            ExistTime;
 	int              Angle;
-	Point            PosCurrent;;
+	Point            PosCurrent;
+	Point            PosPast;
 	Point            PosDown;
 	Point            Move;
-	static const int PointSize = 80;
+	static const int PointSize = 100;
+	int              Id;
 	
 	void             Update(TouchType Type, Point Pos);
 	static int       CalLength(Point Vector);
 private:
-	Point            PosPast;
 	void             CalAngle();
 	void             CalDirection();
 };

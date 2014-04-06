@@ -6,6 +6,9 @@
 
 #include "TouchEvent.h"
 
+#define GET_X_LPARAM(lp)                        ((int)(short)LOWORD(lp))
+#define GET_Y_LPARAM(lp)                        ((int)(short)HIWORD(lp))
+
 #define USER_F_CHANGE WM_USER+103
 #define USER_UP WM_USER+102
 #define USER_DOWN WM_USER+100
@@ -183,20 +186,20 @@ LRESULT CALLBACK DeskBandWindow::WndProc(HWND hWnd, UINT uMessage, WPARAM wParam
 		break;
 	case USER_DOWN:
 	{
-					  Point Location = { (int)wParam, (int)lParam };
-					  pTouch->Update(ETouchDown, Location);
+					  Point Location = { (int)GET_X_LPARAM(lParam), (int)GET_Y_LPARAM(lParam) };
+					  pTouch->Update(GET_POINTERID_WPARAM(wParam), ETouchDown, Location);
 					  break;
 	}
 	case USER_UP:
 	{
-					  Point Location = { (int)wParam, (int)lParam }; 
-					  pTouch->Update(ETouchUp, Location);
+					  Point Location = { (int)GET_X_LPARAM(lParam), (int)GET_Y_LPARAM(lParam) };
+					  pTouch->Update(GET_POINTERID_WPARAM(wParam), ETouchUp, Location);
 					  break;
 	}
 	case USER_MOVE:
 	{
-					  Point Location = { (int)wParam, (int)lParam }; 
-					  pTouch->Update(ETouchMove, Location);
+					  Point Location = { (int)GET_X_LPARAM(lParam), (int)GET_Y_LPARAM(lParam) };
+					  pTouch->Update(GET_POINTERID_WPARAM(wParam), ETouchMove, Location);
 					  break;
 	}
 	}

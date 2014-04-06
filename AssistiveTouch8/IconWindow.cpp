@@ -1,6 +1,11 @@
 #include "IconWindow.h"
+#include "TouchDetector.h"
+#define GET_X_LPARAM(lp)                        ((int)(short)LOWORD(lp))
+#define GET_Y_LPARAM(lp)                        ((int)(short)HIWORD(lp))
 
 IconWindow* pIcon;
+
+extern TouchDetector* pTouch;
 
 IconWindow::IconWindow(HINSTANCE Dll)
 {
@@ -121,6 +126,31 @@ void IconWindow::OnPaint()
 
 LRESULT CALLBACK IconWindow::IconProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	//switch (message)
+	//{
+	//case WM_POINTERDOWN:
+	//case WM_NCPOINTERDOWN:
+	//{
+	//						 Point Location = { (int)GET_X_LPARAM(lParam), (int)GET_Y_LPARAM(lParam) };
+	//						 pTouch->Update(GET_POINTERID_WPARAM(wParam), ETouchDown, Location);
+	//						 break;
+	//}
+	//case WM_POINTERUP:
+	//case WM_NCPOINTERUP:
+	//{
+	//					   Point Location = { (int)GET_X_LPARAM(lParam), (int)GET_Y_LPARAM(lParam) };
+	//					   pTouch->Update(GET_POINTERID_WPARAM(wParam), ETouchUp, Location); 
+	//					   break;
+	//}
+	//case WM_POINTERUPDATE:
+	//case WM_NCPOINTERUPDATE:
+	//{
+	//						   Point Location = { (int)GET_X_LPARAM(lParam), (int)GET_Y_LPARAM(lParam) };
+	//						   pTouch->Update(GET_POINTERID_WPARAM(wParam), ETouchMove, Location); 
+	//						   break;
+	//}
+	//}
+
 	switch (message)
 	{	
 	case WM_PAINT:

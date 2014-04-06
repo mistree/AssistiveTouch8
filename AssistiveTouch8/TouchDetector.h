@@ -19,7 +19,7 @@ private:
 public:
 	TouchDetector(HINSTANCE Dll, InputEmulation& Emu);
 	~TouchDetector();
-	void Update(TouchType Type, Point Pos);
+	void Update(int Id,TouchType Type, Point Pos);
 	void Register(TouchEvent* Event);
 	void Unregister(TouchEvent* Event);
 

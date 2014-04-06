@@ -4,6 +4,7 @@
 #include "IconWindow.h"
 #include "InputEmulation.h"
 #include "TouchPoint.h"
+#include "Timer.h"
 
 class TouchEvent
 {
@@ -16,8 +17,10 @@ public:
 	{};
 	virtual ~TouchEvent()
 	{};
-	virtual void Update(TouchPoint* Point)
-	{};
+	virtual bool Update(TouchPoint* Point)
+	{
+		return false;
+	};
 };
 
 class DragEvent : public TouchEvent
@@ -25,14 +28,16 @@ class DragEvent : public TouchEvent
 private:
 	IconWindow& mIcon;
 	int         mTime;
+	bool        mValid;
 
 public:
 	DragEvent(InputEmulation& Emu, IconWindow& Icon, int Time)
 		: TouchEvent(Emu)
 		, mIcon(Icon)
 		, mTime(Time)
+		, mValid(false)
 	{};
-	void Update(TouchPoint* Point);
+	bool Update(TouchPoint* Point);
 };
 
 class ClickEvent : public TouchEvent
@@ -55,10 +60,10 @@ public:
 		: TouchEvent(Emu)
 		, mIcon(Icon)
 		, mEventM(Event)
-		, mType(EKeyboard)
+		, mType(EMouse)
 		, mTime(Time)
 	{};
-	void Update(TouchPoint* Point);
+	bool Update(TouchPoint* Point);
 };
 
 class SlideEvent : public TouchEvent
@@ -83,11 +88,11 @@ public:
 		: TouchEvent(Emu)
 		, mIcon(Icon)
 		, mEventM(Event)
-		, mType(EKeyboard)
+		, mType(EMouse)
 		, mTime(Time)
 		, mDirection(Direction)
 	{};
-	void Update(TouchPoint* Point);
+	bool Update(TouchPoint* Point);
 };
 
 class SlideContinousEvent : public TouchEvent
@@ -99,6 +104,7 @@ private:
 	EventType     mType;
 	int           mTime;
 	int           mInterval;
+	Timer         mTimer;
 	TouchDirection mDirection;
 public:
 	SlideContinousEvent(InputEmulation& Emu, IconWindow& Icon, KeyboardEvent Event, TouchDirection Direction, int Time, int Interval)
@@ -109,16 +115,20 @@ public:
 		, mTime(Time)
 		, mDirection(Direction)
 		, mInterval(Interval)
-	{};
+	{
+		mTimer.Start();
+	};
 	SlideContinousEvent(InputEmulation& Emu, IconWindow& Icon, MouseEvent Event, TouchDirection Direction, int Time, int Interval)
 		: TouchEvent(Emu)
 		, mIcon(Icon)
 		, mEventM(Event)
-		, mType(EKeyboard)
+		, mType(EMouse)
 		, mTime(Time)
 		, mDirection(Direction)
 		, mInterval(Interval)
-	{};
-	void Update(TouchPoint* Point);
+	{
+		mTimer.Start();
+	};
+	bool Update(TouchPoint* Point);
 };
 #endif //TOUCHEVENT_H
