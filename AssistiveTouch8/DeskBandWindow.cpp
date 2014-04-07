@@ -16,6 +16,7 @@
 
 void*     pBandWin;
 const wchar_t Toolbar[] = L"::TOOLBAR";
+extern UINT Shell;
 
 extern TouchDetector*   pTouch;
 extern Configuration*   pConfig;
@@ -39,7 +40,7 @@ DeskBandWindow::DeskBandWindow()
 
 DeskBandWindow::~DeskBandWindow()
 {
-	//UnhookWinEvent(mEventHook);
+	DeregisterShellHookWindow(mHookHwnd);
 };
 
 BOOL DeskBandWindow::CreateDeskBand(HWND hParentWnd, HINSTANCE hInstance, LPVOID pData)
@@ -72,6 +73,8 @@ BOOL DeskBandWindow::CreateDeskBand(HWND hParentWnd, HINSTANCE hInstance, LPVOID
 			hInstance,
 			pData);
 		mHookHwnd = mHwnd;
+		Shell = RegisterWindowMessage(TEXT("SHELLHOOK"));
+		RegisterShellHookWindow(mHookHwnd);
 	return (NULL != mHwnd);
 };
 
@@ -120,6 +123,20 @@ LRESULT CALLBACK DeskBandWindow::WndProc(HWND hWnd, UINT uMessage, WPARAM wParam
 	LRESULT lResult = 0;
 	DeskBandWindow *pDeskBand = (DeskBandWindow*)pBandWin;
 	TRACKMOUSEEVENT tme;
+	if (uMessage == Shell)
+	{
+		switch (wParam)
+		{
+		//case HSHELL_WINDOWREPLACING:
+		//	if(pDeskBand->mShow)
+		//		pDeskBand->mIconWin.Show(true);
+		case HSHELL_RUDEAPPACTIVATED:
+		case HSHELL_WINDOWACTIVATED:
+			if (pConfig != nullptr)
+				pConfig->Update((HWND)lParam);
+			break;
+		}
+	}
 	switch (uMessage)
 	{
 
@@ -155,6 +172,8 @@ LRESULT CALLBACK DeskBandWindow::WndProc(HWND hWnd, UINT uMessage, WPARAM wParam
 			UpdateWindow(pDeskBand->mHwnd);
 			pDeskBand->mIconWin.Show(pDeskBand->mShow = !pDeskBand->mShow);
 			pDeskBand->mTouchDetector.Set(pDeskBand->mShow);
+			if (pDeskBand->mShow)
+				pConfig->Refresh();
 		}
 		break;
 

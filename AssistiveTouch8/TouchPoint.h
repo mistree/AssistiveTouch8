@@ -36,7 +36,7 @@ public:
 	Point            PosPast;
 	Point            PosDown;
 	Point            Move;
-	static const int PointSize = 100;
+	static const int PointSize = 60;
 	int              Id;
 	
 	void             Update(TouchType Type, Point Pos);

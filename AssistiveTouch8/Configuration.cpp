@@ -8,110 +8,87 @@ Configuration::Configuration(HINSTANCE Dll, TouchDetector& Touch, InputEmulation
 , mTouch(Touch)
 , mInput(Input)
 , mIcon(Icon)
-, mExistNumber(0)
+, mExistConfigNumber(0)
 {
 	pConfig = this;
 	for (auto& i : mEvents) i = nullptr;
+	for (auto& i : mExistAppPath) i = nullptr;
+	for (auto& i : mExistAppConfigPath) i = nullptr;
 
-	GetModuleFileName(Dll, mFullPath, 256);
-	wcscpy(wcsstr(mFullPath, L"AssistiveTouch8.dll"), L"Default.ini");
+	GetModuleFileName(Dll, mCurrentAppConfigPath, 256);
+	wcscpy(wcsstr(mCurrentAppConfigPath, L"AssistiveTouch8.dll"), L"Default.ini");
+
+	Refresh();
 	UpdateEvents();
-
-	for (auto& i : mExistFullPath) i = nullptr;
 };
 
 Configuration::~Configuration()
 {
 	UnregisterAll();
-	for (auto& i : mExistFullPath) 
-	if (i != nullptr) delete i;
+	for (auto& i : mExistAppPath)
+	if (i != nullptr) delete[] i;
+	for (auto& i : mExistAppConfigPath)
+	if (i != nullptr) delete[] i;
 };
 
 void Configuration::Refresh()
 {
-	//mExistFullPath
-	//mExistNumber
-
-	//WIN32_FIND_DATA fdFile;
-	//HANDLE hFind = NULL;
-	//wchar_t sPath[2048];
-	////Specify a file mask. *.* = We want everything! 
-	//wsprintf(sPath, L"%s\\*.*", sDir);
-	//if ((hFind = FindFirstFile(sPath, &fdFile)) == INVALID_HANDLE_VALUE)
-	//{
-	//	wprintf(L"Path not found: [%s]\n", sDir);
-	//	return false;
-	//}
-	//do
-	//{
-	//	//Find first file will always return "."
-	//	//    and ".." as the first two directories. 
-	//	if (wcscmp(fdFile.cFileName, L".") != 0
-	//		&& wcscmp(fdFile.cFileName, L"..") != 0)
-	//	{
-	//		//Build up our file path using the passed in 
-	//		//  [sDir] and the file/foldername we just found: 
-	//		wsprintf(sPath, L"%s\\%s", sDir, fdFile.cFileName);
-	//
-	//		//Is the entity a File or Folder? 
-	//		if (fdFile.dwFileAttributes &FILE_ATTRIBUTE_DIRECTORY)
-	//		{
-	//			wprintf(L"Directory: %s\n", sPath);
-	//			ListDirectoryContents(sPath); //Recursion, I love it! 
-	//		}
-	//		else{
-	//			wprintf(L"File: %s\n", sPath);
-	//		}
-	//	}
-	//} while (FindNextFile(hFind, &fdFile)); //Find the next file. 
-	//FindClose(hFind); //Always, Always, clean things up! 
+	WIN32_FIND_DATA fdFile;
+	HANDLE hFind = NULL;
+	wchar_t sPath[256];
+	wchar_t Temp[256];
+	GetModuleFileName(mDll, sPath, 256);
+	GetModuleFileName(mDll, Temp, 256);
+	wcscpy(wcsstr(sPath, L"AssistiveTouch8.dll"), L"*.ini");
+	wcscpy(wcsstr(Temp, L"AssistiveTouch8.dll"), L"");
+	if ((hFind = FindFirstFile(sPath, &fdFile)) == INVALID_HANDLE_VALUE)
+		return;
+	do
+	{
+		if (wcscmp(fdFile.cFileName, L".") != 0
+			&& wcscmp(fdFile.cFileName, L"..") != 0)
+		{
+			mExistAppPath[mExistConfigNumber] = new wchar_t[256];
+			mExistAppConfigPath[mExistConfigNumber] = new wchar_t[256];
+			wsprintf(mExistAppConfigPath[mExistConfigNumber], L"%s%s", Temp, fdFile.cFileName);
+			GetPrivateProfileString(L"Exe", L"Path", L"None", mExistAppPath[mExistConfigNumber], 256, mExistAppConfigPath[mExistConfigNumber]);
+			mExistConfigNumber++;
+		}
+	} while (FindNextFile(hFind, &fdFile));
+	FindClose(hFind);
 };
 
 void Configuration::Update(HWND FrontWindow)
 {
 	DWORD Pid;
 	HANDLE PidHandle = NULL;
-	wchar_t FilePath[512];
+	wchar_t FilePath[256];
 	GetWindowThreadProcessId(FrontWindow, &Pid);
 	if (Pid == GetCurrentThreadId())
 		return;
 	PidHandle = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, Pid);
-	if (GetModuleFileNameEx(PidHandle, NULL, FilePath, 512) == 0)
+	if (GetModuleFileNameEx(PidHandle, NULL, FilePath, 256) == 0)
 		return;
-	if (wcscmp(FilePath, mFilePath) == 0)
+	if (wcscmp(FilePath, mCurrentAppPath) == 0)
 		return;
-	wcscpy(mFilePath, FilePath);
-	wchar_t* FileName;
-	wchar_t* Temp = wcsstr(FilePath, L"\\");
-	for (;;)
-	{
-		FileName = Temp + 1;
-		Temp = wcsstr(FileName, L"\\");
-		if (Temp == L'\0')
-			break;
-	};	
-	FileName = _wcslwr(FileName);
-	wcsncpy(wcsstr(FileName, L"exe"), L"ini", 3);
-	GetModuleFileName(mDll, mFullPath, 512);
-	wcscpy(wcsstr(mFullPath, L"AssistiveTouch8.dll"), FileName);
-	bool Exist = false;
-	for (auto& i : mExistFullPath)
-	{
-		if (i == nullptr)
-			continue;
-		if (wcscmp(mFullPath, i))
-		{
-			Exist = true;
-			break;
-		}
-	}
 
-	if (!Exist && wcscmp(mConfigName, L"Default.ini"))
-		return;
-	if (!Exist)
-		wcscpy(wcsstr(mFullPath, FileName), L"Default.ini");
-	else
-		wcscpy(mConfigName, FileName);	
+	int Offset = 0;
+	for (auto& i : mExistAppPath)
+	{
+		if (i!= nullptr)
+		if (wcscmp(FilePath, i) == 0)
+		{
+			wcscpy(mCurrentAppPath, FilePath);
+			wcscpy(mCurrentAppConfigPath, mExistAppConfigPath[Offset]);
+			UpdateEvents();
+			return;
+		}
+		Offset++;
+	}
+	wcscpy(mCurrentAppPath, L"Default");
+	GetModuleFileName(mDll, mCurrentAppConfigPath, 256);
+	wcscpy(wcsstr(mCurrentAppConfigPath, L"AssistiveTouch8.dll"), L"Default.ini");
+	UpdateEvents();
 };
 
 void Configuration::UpdateEvents()
@@ -121,19 +98,19 @@ void Configuration::UpdateEvents()
 	mEvents[0] = new DragEvent(mInput, mIcon, 1500);
 
 	int ValidCount = 1;
-	if (GetPrivateProfileInt(L"Click", L"KeyboardValid", 0, mFullPath))
+	if (GetPrivateProfileInt(L"Click", L"KeyboardValid", 0, mCurrentAppConfigPath))
 	{
 		mEvents[ValidCount] = new ClickEvent(mInput, mIcon, 
 			  LoadKeyboard(L"Click"), 
-			  GetPrivateProfileInt(L"Click", L"Time", 1000, mFullPath)
+			  GetPrivateProfileInt(L"Click", L"Time", 1000, mCurrentAppConfigPath)
 			  );
 		ValidCount++;
 	}
-	else if (GetPrivateProfileInt(L"Click", L"MouseValid", 0, mFullPath))
+	else if (GetPrivateProfileInt(L"Click", L"MouseValid", 0, mCurrentAppConfigPath))
 	{	
 		mEvents[ValidCount] = new ClickEvent(mInput, mIcon,
 			LoadMouse(L"Click"),
-			GetPrivateProfileInt(L"Click", L"Time", 1000, mFullPath)
+			GetPrivateProfileInt(L"Click", L"Time", 1000, mCurrentAppConfigPath)
 			);
 		ValidCount++;
 	}
@@ -184,21 +161,21 @@ void Configuration::RegisterAll()
 KeyboardEvent Configuration::LoadKeyboard(const wchar_t* EventName)
 {
 	KeyboardEvent k;
-	k.NumberOfKeys = GetPrivateProfileInt(EventName, L"NumberOfKeys", 0, mFullPath);
-	k.Keys[0] = GetPrivateProfileInt(EventName, L"Key1", 0, mFullPath);
-	k.Keys[1] = GetPrivateProfileInt(EventName, L"Key2", 0, mFullPath);
-	k.Keys[2] = GetPrivateProfileInt(EventName, L"Key3", 0, mFullPath);
+	k.NumberOfKeys = GetPrivateProfileInt(EventName, L"NumberOfKeys", 0, mCurrentAppConfigPath);
+	k.Keys[0] = GetPrivateProfileInt(EventName, L"Key1", 0, mCurrentAppConfigPath);
+	k.Keys[1] = GetPrivateProfileInt(EventName, L"Key2", 0, mCurrentAppConfigPath);
+	k.Keys[2] = GetPrivateProfileInt(EventName, L"Key3", 0, mCurrentAppConfigPath);
 	return k;
 };
 
 MouseEvent    Configuration::LoadMouse(const wchar_t* EventName)
 {
 	MouseEvent m;
-	m.Continous = GetPrivateProfileInt(EventName, L"MouseContinous", 0, mFullPath);
-	m.Button = GetPrivateProfileInt(EventName, L"MouseButton", 0, mFullPath);
-	m.WheelMovement = GetPrivateProfileInt(EventName, L"WheelMovement", 0, mFullPath);
+	m.Continous = GetPrivateProfileInt(EventName, L"MouseContinous", 0, mCurrentAppConfigPath);
+	m.Button = GetPrivateProfileInt(EventName, L"MouseButton", 0, mCurrentAppConfigPath);
+	m.WheelMovement = GetPrivateProfileInt(EventName, L"WheelMovement", 0, mCurrentAppConfigPath);
 	if (!m.Continous)
-		m.ButtonUp = GetPrivateProfileInt(EventName, L"MouseButtonUp", 0, mFullPath);
+		m.ButtonUp = GetPrivateProfileInt(EventName, L"MouseButtonUp", 0, mCurrentAppConfigPath);
 	return m;
 };
 
@@ -240,21 +217,21 @@ void          Configuration::Write(const wchar_t* EventName, MouseEvent Event, i
 
 void          Configuration::LoadSlideEvents(const wchar_t* EventName, TouchDirection Direction, int& ValidCount)
 {
-	if (GetPrivateProfileInt(EventName, L"KeyboardValid", 0, mFullPath))
+	if (GetPrivateProfileInt(EventName, L"KeyboardValid", 0, mCurrentAppConfigPath))
 	{
 		mEvents[ValidCount] = new SlideEvent(mInput, mIcon,
 			LoadKeyboard(EventName),
 			Direction,
-			GetPrivateProfileInt(EventName, L"Time", 1000, mFullPath)
+			GetPrivateProfileInt(EventName, L"Time", 1000, mCurrentAppConfigPath)
 			);
 		ValidCount++;
 	}
-	else if (GetPrivateProfileInt(EventName, L"MouseValid", 0, mFullPath))
+	else if (GetPrivateProfileInt(EventName, L"MouseValid", 0, mCurrentAppConfigPath))
 	{
 		mEvents[ValidCount] = new SlideEvent(mInput, mIcon,
 			LoadMouse(EventName),
 			Direction,
-			GetPrivateProfileInt(EventName, L"Time", 1000, mFullPath)
+			GetPrivateProfileInt(EventName, L"Time", 1000, mCurrentAppConfigPath)
 			);
 		ValidCount++;
 	}
@@ -262,23 +239,23 @@ void          Configuration::LoadSlideEvents(const wchar_t* EventName, TouchDire
 
 void          Configuration::LoadSlideContinousEvents(const wchar_t* EventName, TouchDirection Direction, int& ValidCount)
 {
-	if (GetPrivateProfileInt(EventName, L"KeyboardValid", 0, mFullPath))
+	if (GetPrivateProfileInt(EventName, L"KeyboardValid", 0, mCurrentAppConfigPath))
 	{
 		mEvents[ValidCount] = new SlideContinousEvent(mInput, mIcon,
 			LoadKeyboard(EventName),
 			Direction,
-			GetPrivateProfileInt(EventName, L"Time", 1000, mFullPath),
-			GetPrivateProfileInt(EventName, L"Interval", 1000, mFullPath)
+			GetPrivateProfileInt(EventName, L"Time", 1000, mCurrentAppConfigPath),
+			GetPrivateProfileInt(EventName, L"Interval", 1000, mCurrentAppConfigPath)
 			);
 		ValidCount++;
 	}
-	else if (GetPrivateProfileInt(EventName, L"MouseValid", 0, mFullPath))
+	else if (GetPrivateProfileInt(EventName, L"MouseValid", 0, mCurrentAppConfigPath))
 	{
 		mEvents[ValidCount] = new SlideContinousEvent(mInput, mIcon,
 			LoadMouse(EventName),
 			Direction,
-			GetPrivateProfileInt(EventName, L"Time", 1000, mFullPath),
-			GetPrivateProfileInt(EventName, L"Interval", 1000, mFullPath)
+			GetPrivateProfileInt(EventName, L"Time", 1000, mCurrentAppConfigPath),
+			GetPrivateProfileInt(EventName, L"Interval", 1000, mCurrentAppConfigPath)
 			);
 		ValidCount++;
 	}

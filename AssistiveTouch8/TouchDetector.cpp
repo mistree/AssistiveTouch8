@@ -13,6 +13,7 @@ TouchDetector*   pTouch = nullptr;
 HHOOK mHookMessage = NULL;
 HHOOK mHookWin = NULL;
 HWND  mHookHwnd = NULL;
+UINT Shell = 0;
 #pragma data_seg()
 #pragma comment(linker,"/section:.shared,rws")
 
@@ -43,12 +44,19 @@ BOOL TouchDetector::SetMessageHook(BOOL Install)
 	if (Install)
 	{
 		return ((mHookMessage = ::SetWindowsHookEx(WH_GETMESSAGE, MessageHookProc, mDll, 0)) != NULL)
-			 && ((mHookWin = ::SetWindowsHookEx(WH_CBT, WinHookProc, mDll, 0)) != NULL);
+			;//&& ((mHookWin = ::SetWindowsHookEx(WH_CBT, WinHookProc, mDll, 0)) != NULL);
 	}
 	else
 	{
-		return UnhookWindowsHookEx(mHookMessage)
-		    && UnhookWindowsHookEx(mHookWin);
+		Timer Time;
+		while (!UnhookWindowsHookEx(mHookMessage))
+		if (Time.Elasped() > 5000)
+			return false;
+		//Time.Start();
+		//while (!UnhookWindowsHookEx(mHookWin))
+		//if (Time.Elasped() > 5000)
+		//	return false;
+		return true;
 	}
 };
 
@@ -155,6 +163,7 @@ LRESULT CALLBACK WinHookProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
 	switch (nCode)
 	{
+	case HCBT_MINMAX:
 	case HCBT_ACTIVATE:
 	case HCBT_MOVESIZE:
 	case HCBT_SETFOCUS:

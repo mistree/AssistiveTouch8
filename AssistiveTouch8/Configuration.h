@@ -10,11 +10,12 @@ class Configuration
 {
 private:
 	HINSTANCE       mDll;
-	wchar_t         mFullPath[512]; // path of configuration file
-	wchar_t         mFilePath[512]; // path of fron app
-	wchar_t*        mExistFullPath[50]; // paths of exist configuration files
-	int             mExistNumber;   // number of exist configuration files
-	wchar_t         mConfigName[512]; // current configuration file name
+	wchar_t         mCurrentAppConfigPath[256]; // path of configuration file
+	wchar_t         mCurrentAppPath[256];       // path of fron app
+
+	wchar_t*        mExistAppPath[50];          // paths of apps in config files
+	wchar_t*        mExistAppConfigPath[50];    // paths of config files
+	int             mExistConfigNumber;         // number of exist config files
 	TouchDetector&  mTouch;
 	InputEmulation& mInput;
 	IconWindow&     mIcon;
