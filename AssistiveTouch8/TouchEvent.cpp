@@ -114,6 +114,8 @@ bool MouseControlEvent::Update(TouchPoint* Point)
 {
 	if (!mIcon.mShow)
 		return true;
+	if (mInMove && mTouchId != Point->Id)
+		return true;
 	switch (Point->Status)
 	{
 	case ETouchDown:
@@ -121,6 +123,7 @@ bool MouseControlEvent::Update(TouchPoint* Point)
 		if (TouchPoint::CalLength(Point->PosCurrent - mIcon.mPosition) < PointSize)
 		{
 			mInMove = true;
+			mTouchId = Point->Id;
 			mCursorBak = mCursor;
 		}
 		break;

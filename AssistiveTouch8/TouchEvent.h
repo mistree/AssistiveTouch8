@@ -160,6 +160,7 @@ private:
 	float         mSpeed;
 	Point         mCursor;
 	Point         mCursorBak;
+	int           mTouchId;
 
 public:
 	MouseControlEvent(InputEmulation& Emu, IconWindow& Icon, float Speed);
