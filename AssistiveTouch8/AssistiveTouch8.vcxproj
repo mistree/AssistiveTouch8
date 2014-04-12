@@ -215,6 +215,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Cursor.png" />
     <Image Include="Icon.png" />
     <Image Include="Touch.ico" />
   </ItemGroup>

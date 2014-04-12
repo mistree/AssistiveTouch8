@@ -104,6 +104,7 @@ private:
 	EventType     mType;
 	int           mTime;
 	int           mInterval;
+	bool          mPressed;
 	Timer         mTimer;
 	TouchDirection mDirection;
 public:
@@ -115,6 +116,7 @@ public:
 		, mTime(Time)
 		, mDirection(Direction)
 		, mInterval(Interval)
+		, mPressed(false)
 	{
 		mTimer.Start();
 	};
@@ -126,9 +128,44 @@ public:
 		, mTime(Time)
 		, mDirection(Direction)
 		, mInterval(Interval)
+		, mPressed(false)
 	{
 		mTimer.Start();
 	};
 	bool Update(TouchPoint* Point);
 };
+
+class TopEvent : public TouchEvent
+{
+private:
+	IconWindow& mIcon;
+	int         mTime;
+
+public:
+	TopEvent(InputEmulation& Emu, IconWindow& Icon, int Time)
+		: TouchEvent(Emu)
+		, mIcon(Icon)
+		, mTime(Time)
+	{};
+	bool Update(TouchPoint* Point);
+};
+
+class MouseControlEvent : public TouchEvent
+{
+private:
+	IconWindow&   mIcon;
+	Timer         mTimer;
+	bool          mInMove;
+	bool          mClickValid;
+	float         mSpeed;
+	Point         mCursor;
+	Point         mCursorBak;
+
+public:
+	MouseControlEvent(InputEmulation& Emu, IconWindow& Icon, float Speed);
+	~MouseControlEvent();
+	bool Update(TouchPoint* Point);
+
+};
+
 #endif //TOUCHEVENT_H

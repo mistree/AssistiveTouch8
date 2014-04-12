@@ -5,6 +5,8 @@
 #include <gdiplus.h>
 using namespace Gdiplus;
 
+extern int PointSize;
+
 enum TouchType     // Down -> Move -> Up
 {
 	ETouchDown = 0,
@@ -36,7 +38,6 @@ public:
 	Point            PosPast;
 	Point            PosDown;
 	Point            Move;
-	static const int PointSize = 60;
 	int              Id;
 	
 	void             Update(TouchType Type, Point Pos);

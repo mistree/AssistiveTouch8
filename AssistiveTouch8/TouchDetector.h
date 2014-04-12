@@ -3,7 +3,6 @@
 
 #include <Windows.h>
 #include "InputEmulation.h"
-
 #include "TouchPoint.h"
 #include "TouchEvent.h"
 
@@ -16,6 +15,7 @@ private:
 	TouchPoint*      mPoints[5];
 	TouchEvent*      mEvents[50];
 	bool             mEnable;
+	bool             mTop;
 
 public:
 	TouchDetector(HINSTANCE Dll, InputEmulation& Emu);

@@ -14,13 +14,14 @@ private:
 	GdiplusStartupInput mGdiStartup;
 	ULONG_PTR           mGdiToken;
 	BLENDFUNCTION       mGdiBlend;
-	Image*              mImage;
-	HWND                mIconHwnd;
 	wchar_t             mFullPath[256];
 	int                 mAlpha;
 
 public:
+	HWND                mIconHwnd;
 	Point               mPosition;
+	Image*              mImage;
+	bool                mShow;
 
 public:
 	IconWindow(HINSTANCE Dll);

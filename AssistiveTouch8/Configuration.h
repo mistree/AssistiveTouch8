@@ -22,6 +22,14 @@ private:
 	TouchEvent*     mEvents[50];
 
 public:
+	enum EEventMode
+	{
+		EEventNormal,
+		EEventMouse,
+		EEventGamepad
+	} mEventMode;
+
+public:
 	Configuration(HINSTANCE Dll, TouchDetector& Touch, InputEmulation& Input, IconWindow& Icon);
 	~Configuration();
 
@@ -37,6 +45,9 @@ public:
 	void          Write(const wchar_t* EventName, MouseEvent Event, int Time, int Interval, const wchar_t* Path);
 
 private:
+	void          UpdateNormalEvents();
+	void          UpdateMouseEvents();
+	void          UpdateGamepadEvents();
 	void          LoadSlideEvents(const wchar_t* EventName,TouchDirection Direction,int& ValidCount);
 	void          LoadSlideContinousEvents(const wchar_t* EventName, TouchDirection Direction, int& ValidCount);
 };

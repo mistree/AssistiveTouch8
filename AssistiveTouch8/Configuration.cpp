@@ -9,6 +9,7 @@ Configuration::Configuration(HINSTANCE Dll, TouchDetector& Touch, InputEmulation
 , mInput(Input)
 , mIcon(Icon)
 , mExistConfigNumber(0)
+, mEventMode(EEventMouse)
 {
 	pConfig = this;
 	for (auto& i : mEvents) i = nullptr;
@@ -43,6 +44,7 @@ void Configuration::Refresh()
 	wcscpy(wcsstr(Temp, L"AssistiveTouch8.dll"), L"");
 	if ((hFind = FindFirstFile(sPath, &fdFile)) == INVALID_HANDLE_VALUE)
 		return;
+	mExistConfigNumber = 0;
 	do
 	{
 		if (wcscmp(fdFile.cFileName, L".") != 0
@@ -95,43 +97,34 @@ void Configuration::UpdateEvents()
 {
 	UnregisterAll();
 
-	mEvents[0] = new DragEvent(mInput, mIcon, 1500);
+	wchar_t ConfigPath[256];
+	wchar_t IconName[256];
+	GetModuleFileName(mDll, ConfigPath, 256);
+	wcscpy(wcsstr(ConfigPath, L"AssistiveTouch8.dll"), L"Global.ini");
 
-	int ValidCount = 1;
-	if (GetPrivateProfileInt(L"Click", L"KeyboardValid", 0, mCurrentAppConfigPath))
+	PointSize = GetPrivateProfileInt(L"Settings", L"PointSize", 60, ConfigPath);
+
+	GetPrivateProfileString(L"Icon", L"Path", L"None", IconName, 256, ConfigPath);
+	if (wcscmp(IconName, L"None") != 0)
 	{
-		mEvents[ValidCount] = new ClickEvent(mInput, mIcon, 
-			  LoadKeyboard(L"Click"), 
-			  GetPrivateProfileInt(L"Click", L"Time", 1000, mCurrentAppConfigPath)
-			  );
-		ValidCount++;
+		wcscpy(wcsstr(ConfigPath, L"AssistiveTouch8.dll"), IconName);
+		Image* IconImage = Gdiplus::Image::FromFile(ConfigPath);
+		if (IconImage->GetLastStatus() == Gdiplus::Ok)
+			mIcon.mImage = IconImage;;
 	}
-	else if (GetPrivateProfileInt(L"Click", L"MouseValid", 0, mCurrentAppConfigPath))
-	{	
-		mEvents[ValidCount] = new ClickEvent(mInput, mIcon,
-			LoadMouse(L"Click"),
-			GetPrivateProfileInt(L"Click", L"Time", 1000, mCurrentAppConfigPath)
-			);
-		ValidCount++;
+		
+	switch (mEventMode)
+	{
+	case EEventNormal:
+		UpdateNormalEvents();
+		break;
+	case EEventMouse:
+		UpdateMouseEvents();
+		break;
+	case EEventGamepad:
+
+		break;
 	}
-
-	LoadSlideEvents(L"SlideUp", EDirectionUp, ValidCount);
-	LoadSlideEvents(L"SlideDown", EDirectionDown, ValidCount);
-	LoadSlideEvents(L"SlideLeft", EDirectionLeft, ValidCount);
-	LoadSlideEvents(L"SlideRight", EDirectionRight, ValidCount);
-	LoadSlideEvents(L"SlideUpLeft", EDirectionUpLeft, ValidCount);
-	LoadSlideEvents(L"SlideUpRight", EDirectionUpRight, ValidCount);
-	LoadSlideEvents(L"SlideDownLeft", EDirectionDownLeft, ValidCount);
-	LoadSlideEvents(L"SlideDownRight", EDirectionDownRight, ValidCount);
-
-	LoadSlideContinousEvents(L"SlideContinousUp", EDirectionUp, ValidCount);
-	LoadSlideContinousEvents(L"SlideContinousDown", EDirectionDown, ValidCount);
-	LoadSlideContinousEvents(L"SlideContinousLeft", EDirectionLeft, ValidCount);
-	LoadSlideContinousEvents(L"SlideContinousRight", EDirectionRight, ValidCount);
-	LoadSlideContinousEvents(L"SlideContinousUpLeft", EDirectionUpLeft, ValidCount);
-	LoadSlideContinousEvents(L"SlideContinousUpRight", EDirectionUpRight, ValidCount);
-	LoadSlideContinousEvents(L"SlideContinousDownLeft", EDirectionDownLeft, ValidCount);
-	LoadSlideContinousEvents(L"SlideContinousDownRight", EDirectionDownRight, ValidCount);
 	
 	RegisterAll();
 };
@@ -259,4 +252,76 @@ void          Configuration::LoadSlideContinousEvents(const wchar_t* EventName, 
 			);
 		ValidCount++;
 	}
+};
+
+void          Configuration::UpdateNormalEvents()
+{
+	wchar_t ConfigPath[256];
+	GetModuleFileName(mDll, ConfigPath, 256);
+	wcscpy(wcsstr(ConfigPath, L"AssistiveTouch8.dll"), L"Global.ini");
+
+	mEvents[0] = new DragEvent(mInput, mIcon, 
+		GetPrivateProfileInt(L"Settings", L"DragTime", 1500, ConfigPath)
+		);
+	mEvents[1] = new TopEvent(mInput, mIcon, 
+		GetPrivateProfileInt(L"Settings", L"TopTime", 1500, ConfigPath)
+		);
+
+	int ValidCount = 2;
+	if (GetPrivateProfileInt(L"Click", L"KeyboardValid", 0, mCurrentAppConfigPath))
+	{
+		mEvents[ValidCount] = new ClickEvent(mInput, mIcon,
+			LoadKeyboard(L"Click"),
+			GetPrivateProfileInt(L"Click", L"Time", 1000, mCurrentAppConfigPath)
+			);
+		ValidCount++;
+	}
+	else if (GetPrivateProfileInt(L"Click", L"MouseValid", 0, mCurrentAppConfigPath))
+	{
+		mEvents[ValidCount] = new ClickEvent(mInput, mIcon,
+			LoadMouse(L"Click"),
+			GetPrivateProfileInt(L"Click", L"Time", 1000, mCurrentAppConfigPath)
+			);
+		ValidCount++;
+	}
+
+	LoadSlideEvents(L"SlideUp", EDirectionUp, ValidCount);
+	LoadSlideEvents(L"SlideDown", EDirectionDown, ValidCount);
+	LoadSlideEvents(L"SlideLeft", EDirectionLeft, ValidCount);
+	LoadSlideEvents(L"SlideRight", EDirectionRight, ValidCount);
+	LoadSlideEvents(L"SlideUpLeft", EDirectionUpLeft, ValidCount);
+	LoadSlideEvents(L"SlideUpRight", EDirectionUpRight, ValidCount);
+	LoadSlideEvents(L"SlideDownLeft", EDirectionDownLeft, ValidCount);
+	LoadSlideEvents(L"SlideDownRight", EDirectionDownRight, ValidCount);
+
+	LoadSlideContinousEvents(L"SlideContinousUp", EDirectionUp, ValidCount);
+	LoadSlideContinousEvents(L"SlideContinousDown", EDirectionDown, ValidCount);
+	LoadSlideContinousEvents(L"SlideContinousLeft", EDirectionLeft, ValidCount);
+	LoadSlideContinousEvents(L"SlideContinousRight", EDirectionRight, ValidCount);
+	LoadSlideContinousEvents(L"SlideContinousUpLeft", EDirectionUpLeft, ValidCount);
+	LoadSlideContinousEvents(L"SlideContinousUpRight", EDirectionUpRight, ValidCount);
+	LoadSlideContinousEvents(L"SlideContinousDownLeft", EDirectionDownLeft, ValidCount);
+	LoadSlideContinousEvents(L"SlideContinousDownRight", EDirectionDownRight, ValidCount);
+}
+
+void          Configuration::UpdateMouseEvents()
+{
+	wchar_t ConfigPath[256];
+	GetModuleFileName(mDll, ConfigPath, 256);
+	wcscpy(wcsstr(ConfigPath, L"AssistiveTouch8.dll"), L"Global.ini");
+
+	mEvents[0] = new DragEvent(mInput, mIcon,
+		GetPrivateProfileInt(L"MouseControl", L"DragTime", 5000, ConfigPath)
+		);
+	mEvents[1] = new TopEvent(mInput, mIcon,
+		GetPrivateProfileInt(L"Settings", L"TopTime", 1500, ConfigPath)
+		);
+	mEvents[2] = new MouseControlEvent(mInput, mIcon,
+		GetPrivateProfileInt(L"MouseControl", L"MoveSpeed", 3, ConfigPath)
+		);
+};
+
+void          Configuration::UpdateGamepadEvents()
+{
+
 };

@@ -20,6 +20,7 @@ extern UINT Shell;
 
 extern TouchDetector*   pTouch;
 extern Configuration*   pConfig;
+extern IconWindow* pIcon;
 extern HWND  mHookHwnd;
 
 DeskBandWindow::DeskBandWindow()
@@ -127,11 +128,14 @@ LRESULT CALLBACK DeskBandWindow::WndProc(HWND hWnd, UINT uMessage, WPARAM wParam
 	{
 		switch (wParam)
 		{
-		//case HSHELL_WINDOWREPLACING:
-		//	if(pDeskBand->mShow)
-		//		pDeskBand->mIconWin.Show(true);
+		case HSHELL_WINDOWREPLACED:
+			if (pDeskBand->mShow && ((HWND)lParam == pIcon->mIconHwnd))
+				BringWindowToTop(pIcon->mIconHwnd);
+			break;
 		case HSHELL_RUDEAPPACTIVATED:
 		case HSHELL_WINDOWACTIVATED:
+			if ((HWND)lParam == pIcon->mIconHwnd)
+				break;
 			if (pConfig != nullptr)
 				pConfig->Update((HWND)lParam);
 			break;
@@ -173,7 +177,11 @@ LRESULT CALLBACK DeskBandWindow::WndProc(HWND hWnd, UINT uMessage, WPARAM wParam
 			pDeskBand->mIconWin.Show(pDeskBand->mShow = !pDeskBand->mShow);
 			pDeskBand->mTouchDetector.Set(pDeskBand->mShow);
 			if (pDeskBand->mShow)
+			{
+				pConfig->mEventMode = (pConfig->mEventMode == Configuration::EEventMouse) ? Configuration::EEventNormal : Configuration::EEventMouse; // only for testing
 				pConfig->Refresh();
+				pConfig->UpdateEvents();
+			}		
 		}
 		break;
 

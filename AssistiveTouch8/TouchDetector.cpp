@@ -69,6 +69,16 @@ void TouchDetector::Update(int Id,TouchType Type, Point Pos)
 {
 	if (!mEnable)
 		return;
+
+	//if (Type == ETouchDown)
+	//{
+	//	QUERY_USER_NOTIFICATION_STATE State;
+	//	SHQueryUserNotificationState(&State);
+	//	if (State == QUNS_RUNNING_D3D_FULL_SCREEN)
+	//		BringWindowToTop(mIconHwnd);
+	//	mTop = true;
+	//};
+
 	switch (Type)
 	{
 

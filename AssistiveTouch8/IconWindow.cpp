@@ -1,15 +1,17 @@
+
 #include "IconWindow.h"
 #include "TouchDetector.h"
 #define GET_X_LPARAM(lp)                        ((int)(short)LOWORD(lp))
 #define GET_Y_LPARAM(lp)                        ((int)(short)HIWORD(lp))
 
-IconWindow* pIcon;
+IconWindow* pIcon = nullptr;
 
 extern TouchDetector* pTouch;
 
 IconWindow::IconWindow(HINSTANCE Dll)
 {
 	pIcon = this;
+	mShow = false;
 	GdiplusStartup(&mGdiToken, &mGdiStartup, NULL);
 
 	GetModuleFileName(Dll, mFullPath, 256);
@@ -21,18 +23,27 @@ IconWindow::IconWindow(HINSTANCE Dll)
 	mGdiBlend.AlphaFormat = 1;
 	mGdiBlend.SourceConstantAlpha = mAlpha;
 
-	HRSRC hResource = ::FindResource(Dll, MAKEINTRESOURCE(IDB_PNG1), L"png");
-	DWORD Length = SizeofResource(Dll, hResource);
-	BYTE* lpResource = (BYTE*)LoadResource(Dll, hResource);
-	HGLOBAL mMemory = GlobalAlloc(GMEM_FIXED, Length);
-	BYTE* pmem = (BYTE*)GlobalLock(mMemory);
-	memcpy(pmem, lpResource, Length);
-	IStream* pStream;
-	CreateStreamOnHGlobal(mMemory, FALSE, &pStream);
-	mImage = Image::FromStream(pStream);
-	GlobalUnlock(mMemory);
-	pStream->Release();
-	FreeResource(lpResource);
+	wchar_t IconName[256];
+	GetModuleFileName(Dll, IconName, 256);
+	wcscpy(wcsstr(IconName, L"AssistiveTouch8.dll"), L"Icon.png");
+	Image* IconImage = Gdiplus::Image::FromFile(IconName);
+	if (IconImage->GetLastStatus() == Gdiplus::Ok)
+		mImage = IconImage;
+	else
+	{
+		HRSRC hResource = ::FindResource(Dll, MAKEINTRESOURCE(IDB_PNG1), L"png");
+		DWORD Length = SizeofResource(Dll, hResource);
+		BYTE* lpResource = (BYTE*)LoadResource(Dll, hResource);
+		HGLOBAL mMemory = GlobalAlloc(GMEM_FIXED, Length);
+		BYTE* pmem = (BYTE*)GlobalLock(mMemory);
+		memcpy(pmem, lpResource, Length);
+		IStream* pStream;
+		CreateStreamOnHGlobal(mMemory, FALSE, &pStream);
+		mImage = Image::FromStream(pStream);
+		GlobalUnlock(mMemory);
+		pStream->Release();
+		FreeResource(lpResource);
+	}
 
 	WNDCLASS IconClass;
 	IconClass.style = CS_HREDRAW | CS_VREDRAW;
@@ -74,6 +85,7 @@ IconWindow::~IconWindow()
 
 void IconWindow::Show(bool Visible)
 {
+	mShow = Visible;
 	ShowWindow(mIconHwnd, Visible);
 	UpdateWindow(mIconHwnd);
 };
@@ -126,37 +138,16 @@ void IconWindow::OnPaint()
 
 LRESULT CALLBACK IconWindow::IconProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	//switch (message)
-	//{
-	//case WM_POINTERDOWN:
-	//case WM_NCPOINTERDOWN:
-	//{
-	//						 Point Location = { (int)GET_X_LPARAM(lParam), (int)GET_Y_LPARAM(lParam) };
-	//						 pTouch->Update(GET_POINTERID_WPARAM(wParam), ETouchDown, Location);
-	//						 break;
-	//}
-	//case WM_POINTERUP:
-	//case WM_NCPOINTERUP:
-	//{
-	//					   Point Location = { (int)GET_X_LPARAM(lParam), (int)GET_Y_LPARAM(lParam) };
-	//					   pTouch->Update(GET_POINTERID_WPARAM(wParam), ETouchUp, Location); 
-	//					   break;
-	//}
-	//case WM_POINTERUPDATE:
-	//case WM_NCPOINTERUPDATE:
-	//{
-	//						   Point Location = { (int)GET_X_LPARAM(lParam), (int)GET_Y_LPARAM(lParam) };
-	//						   pTouch->Update(GET_POINTERID_WPARAM(wParam), ETouchMove, Location); 
-	//						   break;
-	//}
-	//}
-
 	switch (message)
 	{	
 	case WM_PAINT:
 	{
 		pIcon->OnPaint();
 		break;
+	}
+	case WM_MOUSEACTIVATE:
+	{
+		return MA_NOACTIVATEANDEAT;
 	}
 	case WM_DESTROY:
 	{
@@ -167,7 +158,13 @@ LRESULT CALLBACK IconWindow::IconProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		WritePrivateProfileString(L"Settings", L"PosY", Temp, pIcon->mFullPath);		
         break;
 	}
-		
+	case WM_POINTERDOWN:
+	case WM_NCPOINTERDOWN:
+	case WM_POINTERUP:
+	case WM_NCPOINTERUP:
+	case WM_POINTERUPDATE:
+	case WM_NCPOINTERUPDATE:
+		return MA_NOACTIVATEANDEAT;
 
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);

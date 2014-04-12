@@ -1,6 +1,8 @@
 #include "TouchPoint.h"
 #include <math.h>
 
+int PointSize = 60;
+
 TouchPoint::TouchPoint(int PointId, TouchType Type, Point Pos)
 : PosCurrent(Pos),
   PosPast(Pos),
@@ -9,7 +11,7 @@ TouchPoint::TouchPoint(int PointId, TouchType Type, Point Pos)
   Angle(-1),
   Id(PointId)
 {
-
+	
 };
 
 void TouchPoint::Update(TouchType Type, Point Pos)
